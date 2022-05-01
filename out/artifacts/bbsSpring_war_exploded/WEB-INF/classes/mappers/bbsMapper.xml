@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bbsMapper">
+
+    <resultMap id="bbsVo" type="com.bbsSpring.vo.BbsVo">
+        <result property="bbsSeq" column="BBS_SEQ"/>
+        <result property="bbsHits" column="BBS_HITS"/>
+        <result property="bbsTitle" column="BBS_TITLE"/>
+        <result property="bbsConts" column="BBS_CONTS"/>
+        <result property="bbsType" column="BBS_TYPE"/>
+        <result property="bbsPwd" column="BBS_PWD"/>
+        <result property="memberId" column="MEMBER_ID"/>
+        <result property="memberName" column="MEMBER_NAME"/>
+        <result property="updUserId" column="UPD_USER_ID"/>
+        <result property="updDate" column="UPD_DATE"/>
+        <result property="regDate" column="REG_DATE"/>
+    </resultMap>
+
+    <select id="getBbsList" parameterType="com.bbsSpring.vo.BbsVo" resultMap="bbsVo">
+        SELECT BBS_SEQ
+             , BBS_TITLE
+             , BBS_CONTS
+             , MEMBER_NAME
+             , MEMBER_ID
+             , BBS_HITS
+             , BBS_PWD
+             , BBS_TYPE
+             , REG_DATE
+             , UPD_DATE
+             , UPD_USER_ID
+        FROM TB_BBS
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test="searchType=='bbsTitle' and keyword != null and keyword !='' ">
+                AND BBS_TITLE LIKE CONCAT('%',#{keyword},'%')
+            </if>
+            <if test="searchType=='bbsConts' and keyword != null and keyword !='' ">
+                AND BBS_CONTS LIKE CONCAT('%',#{keyword},'%')
+            </if>
+            <if test="searchType=='memberName' and keyword != null and keyword !='' ">
+                AND MEMBER_NAME LIKE CONCAT('%',#{keyword},'%')
+            </if>
+        </trim>
+        ORDER BY BBS_SEQ DESC
+        LIMIT  #{startList}, #{listSize}
+    </select>
+
+    <select id="getBbsListCnt" resultType="int">
+        SELECT count(*) as listCnt
+        FROM TB_BBS
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test="keyword != null and keyword != '' ">
+                <if test="searchType=='bbsTitle'">
+                    AND BBS_TITLE like CONCAT('%', #{keyword}, '%')
+                </if>
+                <if test="searchType=='bbsConts'">
+                    AND BBS_CONTS like CONCAT('%', #{keyword}, '%')
+                </if>
+                <if test="searchType=='memberName'">
+                    AND MEMBER_NAME like CONCAT('%', #{keyword}, '%')
+                </if>
+            </if>
+        </trim>
+    </select>
+
+    <select id="getBbsCont" parameterType="com.bbsSpring.vo.BbsVo" resultMap="bbsVo">
+        SELECT BBS_SEQ
+             , BBS_TITLE
+             , BBS_CONTS
+             , MEMBER_NAME
+             , MEMBER_ID
+             , BBS_HITS
+             , BBS_PWD
+             , BBS_TYPE
+             , REG_DATE
+             , UPD_DATE
+             , UPD_USER_ID
+        FROM TB_BBS
+        WHERE BBS_SEQ = #{bbsSeq}
+    </select>
+
+    <insert id="insertBbs" parameterType="com.bbsSpring.vo.BbsVo">
+        INSERT INTO TB_BBS ( BBS_TITLE
+                           , BBS_CONTS
+                           , BBS_TYPE
+                           , BBS_PWD
+                           , MEMBER_ID
+                           , MEMBER_NAME
+                           , BBS_HITS
+                           , REG_DATE)
+        VALUES ( #{bbsTitle}
+               , #{bbsConts}
+               , #{bbsType}
+               , #{bbsPwd}
+               , #{memberId}
+               , #{memberName}
+               , 0
+               , now())
+    </insert>
+
+    <update id="updateBbs" parameterType="com.bbsSpring.vo.BbsVo">
+        UPDATE TB_BBS SET
+            BBS_TITLE = #{bbsTitle}
+            , BBS_CONTS = #{bbsConts}
+            , BBS_TYPE =  #{bbsType}
+            , UPD_USER_ID = #{memberId}
+            , UPD_DATE = now()
+        WHERE BBS_SEQ = #{bbsSeq}
+    </update>
+
+    <update id="updateHit" parameterType="com.bbsSpring.vo.BbsVo">
+        UPDATE TB_BBS SET
+            BBS_HITS = BBS_HITS + 1
+        WHERE BBS_SEQ = #{bbsSeq}
+    </update>
+
+    <delete id="deleteBbs" parameterType="int">
+        DELETE FROM TB_BBS
+        WHERE BBS_SEQ = #{bbsSeq}
+    </delete>
+
+
+</mapper>
+
+

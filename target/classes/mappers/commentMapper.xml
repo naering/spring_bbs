@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="commentMapper">
+
+    <resultMap id="commentVo" type="com.bbsSpring.vo.CommentVo">
+        <result property="bbsSeq" column="BBS_SEQ"/>
+        <result property="commentSeq" column="COMMENT_SEQ"/>
+        <result property="commentConts" column="COMMENT_CONTS"/>
+        <result property="commentDate" column="COMMENT_DATE"/>
+        <result property="memberId" column="MEMBER_ID"/>
+        <result property="commentUpdDate" column="COMMENT_UPD_DATE"/>
+        <result property="commentPwd" column="COMMENT_PWD"/>
+    </resultMap>
+
+    <select id="getCommentList" parameterType="com.bbsSpring.vo.CommentVo" resultMap="commentVo">
+        SELECT COMMENT_SEQ
+             , BBS_SEQ
+             , MEMBER_ID
+             , COMMENT_CONTS
+             , COMMENT_DATE
+             , COMMENT_UPD_DATE
+             , COMMENT_PWD
+    FROM TB_COMMENT
+    WHERE BBS_SEQ = #{bbsSeq}
+    ORDER BY COMMENT_DATE DESC
+    </select>
+
+    <insert id="insertComment" parameterType="com.bbsSpring.vo.CommentVo">
+        INSERT INTO TB_COMMENT ( BBS_SEQ
+                                , COMMENT_CONTS
+                                , COMMENT_DATE
+                                , MEMBER_ID
+                                , COMMENT_PWD)
+        VALUES ( #{bbsSeq}
+                , #{commentConts}
+                , NOW()
+                , #{memberId}
+                , #{commentPwd} )
+    </insert>
+
+    <update id="updateComment" parameterType="com.bbsSpring.vo.CommentVo">
+        UPDATE TB_COMMENT SET
+            COMMENT_CONTS = #{commentConts}
+            , COMMENT_UPD_DATE = NOW()
+        WHERE COMMENT_SEQ = #{commentSeq}
+    </update>
+
+    <delete id="deleteComment" parameterType="int">
+        DELETE FROM TB_COMMENT
+        WHERE COMMENT_SEQ = #{commentSeq}
+    </delete>
+
+</mapper>

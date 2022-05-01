@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="userMapper">
+
+    <resultMap id="userVo" type="com.bbsSpring.vo.UserVo">
+        <result property="memberId" column="MEMBER_ID"/>
+        <result property="memberPwd" column="MEMBER_PWD"/>
+        <result property="memberName" column="MEMBER_NAME"/>
+        <result property="memberAge" column="MEMBER_AGE"/>
+        <result property="roleId" column="ROLE_ID"/>
+        <result property="memberAddress" column="MEMBER_ADDRESS"/>
+        <result property="memberEmail" column="MEMBER_EMAIL"/>
+        <result property="memberPhone" column="MEMBER_PHONE"/>
+        <result property="memberGender" column="MEMBER_GENDER"/>
+        <result property="memberStartDate" column="MEMBER_START_DATE"/>
+        <result property="memberEndDate" column="MEMBER_END_DATE"/>
+        <result property="pwdUpdDate" column="PWD_UPD_DATE"/>
+    </resultMap>
+
+    <select id="getUserInfo" parameterType="com.bbsSpring.vo.UserVo" resultMap="userVo">
+        SELECT MEMBER_ID
+             , MEMBER_PWD
+             , MEMBER_NAME
+             , MEMBER_AGE
+             , ROLE_ID
+             , MEMBER_ADDRESS
+             , MEMBER_EMAIL
+             , MEMBER_PHONE
+             , MEMBER_GENDER
+             , MEMBER_START_DATE
+             , MEMBER_END_DATE
+             , PWD_UPD_DATE
+        FROM TB_MEMBER
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+    <select id="getUserList" parameterType="com.bbsSpring.vo.UserVo" resultMap="userVo">
+        SELECT MEMBER_ID
+             , MEMBER_PWD
+             , MEMBER_NAME
+             , MEMBER_AGE
+             , ROLE_ID
+             , MEMBER_ADDRESS
+             , MEMBER_EMAIL
+             , MEMBER_PHONE
+             , MEMBER_GENDER
+             , MEMBER_START_DATE
+             , MEMBER_END_DATE
+             , PWD_UPD_DATE
+        FROM TB_MEMBER
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test="keyword != null and keyword != '' and keyword != null and keyword !=''  ">
+                <if test="searchType=='memberId'">
+                    AND MEMBER_ID like CONCAT('%', #{keyword}, '%')
+                </if>
+                <if test="searchType=='memberName' and keyword != null and keyword !='' ">
+                    AND MEMBER_NAME like CONCAT('%', #{keyword}, '%')
+                </if>
+                <if test="searchType=='roleId' and keyword != null and keyword !='' ">
+                    AND ROLE_ID like CONCAT('%', #{keyword}, '%')
+                </if>
+            </if>
+        </trim>
+    </select>
+
+    <insert id="insertUser" parameterType="com.bbsSpring.vo.UserVo">
+        INSERT INTO TB_MEMBER ( MEMBER_ID
+                               , MEMBER_PWD
+                               , MEMBER_NAME
+                               , MEMBER_AGE
+                               , ROLE_ID
+                               , MEMBER_ADDRESS
+                               , MEMBER_EMAIL
+                               , MEMBER_PHONE
+                               , MEMBER_GENDER
+                               , MEMBER_START_DATE )
+        VALUES ( #{memberId}
+               , #{memberPwd}
+               , #{memberName}
+               , #{memberAge}
+               , #{roleId}
+               , #{memberAddress}
+               , #{memberEmail}
+               , #{memberPhone}
+               , #{memberGender}
+               , NOW() )
+    </insert>
+
+    <update id="updateUser" parameterType="com.bbsSpring.vo.UserVo">
+        UPDATE TB_MEMBER SET
+           MEMBER_PWD = #{memberPwd}
+           , MEMBER_NAME = #{memberName}
+           , MEMBER_AGE = #{memberAge}
+           , MEMBER_ADDRESS = #{memberAddress}
+           , MEMBER_EMAIL = #{memberEmail}
+           , MEMBER_PHONE = #{memberPhone}
+           , MEMBER_GENDER = #{memberGender}
+        WHERE MEMBER_ID = #{memberId}
+    </update>
+
+    <delete id="deleteUser" parameterType="int">
+        DELETE FROM TB_MEMBER WHERE MEMBER_ID = #{memberId}
+    </delete>
+
+    <select id="getUserListCnt" resultType="int">
+        SELECT count(*) as listCnt
+        FROM TB_MEMBER
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test="keyword != null and keyword != '' ">
+                <if test="searchType=='memberId'">
+                    AND MEMBER_ID like CONCAT('%', #{keyword}, '%')
+                </if>
+                <if test="searchType=='memberName'">
+                    AND MEMBER_NAME like CONCAT('%', #{keyword}, '%')
+                </if>
+                <if test="searchType=='roleId'">
+                    AND ROLE_ID like CONCAT('%', #{keyword}, '%')
+                </if>
+            </if>
+        </trim>
+    </select>
+
+</mapper>
