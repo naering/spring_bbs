@@ -205,8 +205,7 @@
     <div>
         <h1>회원가입</h1>
     </div>
-<%--    <form action="join.do" method="post" onsubmit="return allCheck()" >--%>
-<%--        <ul>--%>
+
 <%--            <li><label>이름:</label><input type="text" placeholder="이름" name="memberName" id="memberName" required autocomplete="off"></li>--%>
 <%--            <li><label>아이디:</label><input type="text" placeholder="아이디" name="memberId" id="memberId" required autocomplete="off"></li>--%>
 <%--            <li><label>비밀번호:</label><input type="password" placeholder="비밀번호" name="memberPwd" id="memberPwd" required autocomplete="off"></li>--%>
@@ -224,10 +223,8 @@
 <%--                <input type="text" id="tbox4" name="memberAddress2" placeholder="참고항목" size=28 autocomplete="off">--%>
 <%--                <input type="text" id="tbox3" name="memberAddress3" placeholder="상세주소" autocomplete="off">--%>
 <%--            </li>--%>
-<%--        </ul>--%>
-<%--        <p><input type="submit" value="가입하기" id="signUp" /></p>--%>
-<%--    </form>--%>
-<%--    <a href="login.do"><button>로그인 화면</button></a>--%>
+
+
     <form:form name="form" id="form" role="form" modelAttribute="userVo" method="post" action="${pageContext.request.contextPath}/user/insertUser">
         <label>아이디:</label><form:input path="memberId" id="memberId" placeholder="아이디 입력" />
         <label>이름:</label><form:input path="memberName" id="memberName" placeholder="이름 입력" />
